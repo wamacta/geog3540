@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<title>GeoVisualization Workshop</title>
+
+	<!-- CSS, cascading style sheets set styles.
+		We're grabbing Bootstrap, a CSS library that will make formatring easier.
+	 	We also make calls to Google to use one of their fonts; Raleway -->
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Raleway:400,500,900" rel="stylesheet">
+
+	<!-- JS libraries, these will make all of the web mapping magic come true.
+			Bootstrap and jQuery are the basics, and they'll be used for the HTML -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<!-- D3.js, responsible for the graphics-->
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+
+	<!-- ColorBrewer, provides perceptually balanced colorschemes for us -->
+	<script src="https://d3js.org/colorbrewer.v1.min.js"></script>
+
+	<!-- TopoJson, a file format and will make mapping much easier for D3.js -->
+	<script src="https://d3js.org/topojson.v2.min.js"></script>
+
+	<!-- D3 Legend, for adding legends -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.21.0/d3-legend.min.js"></script>
+
+	<!-- SimpleStatistics.js, adds many stats functions. But we want Jenks natural breaks -->
+	<script src="https://unpkg.com/simple-statistics@2.3.0/dist/simple-statistics.min.js"></script>
+
+	<!-- annotations -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/1.14.0/d3-annotation.min.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/1.14.0/d3-annotation.min.js"></script>
+
+	<!-- Our Custom Styling -->
+	<link href="src/style.css" rel="stylesheet">
+</head>
+
+<body>
+<!-- container -->
+<div class="container">
+  <br>
+	<div class="row">
+
+		<div class="panel panel-default">
+          <div class="panel-heading">
+          	<h1>GeoVisualization <strong>Workshop</strong></h1>
+          </div>
+
+          <div class="panel-body">
+						<div class="row">
+
+							<div class="col-xs-12" id='width-setter'>
+								<h3>Introductions</h3>
+								<p><strong>This tutorial</strong> will describe the process of making a web map with D3.js. The following pages have code examples and links that we will go through together.</p>
+							</div>
+							<div class="col-xs-12" id='width-setter'>
+								<h3>Steps</h3>
+								<ul>
+									<li><a href="01-basics.html">D3 Basics</a></li>
+									<li><a href="02-mapping.html">Web mapping.</a></li>
+									<li><a href="03-geoviz.html">GeoVisualization.</a> The good stuff.</li>
+								</ul>
+							</div>
+
+		        </div>
+					</div>
+
+		</div> <!-- end panel -->
+	</div> <!-- end row -->
+</div> <!-- end container -->
+
+</body>
+</html>

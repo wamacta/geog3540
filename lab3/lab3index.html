@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<!--You need to put everything inside of an html tag!-->
+<!--This is a comment! It doesn't do anything except helping you take notes for describing the code-->
+<head>
+  <script src="https://d3js.org/d3.v4.js"></script>
+<style>
+.outlineSVG {
+	fill: ddd;
+	fill-opacity: 0.5;
+	stroke: #000;
+	stroke-width: 1px;
+}
+#fillSVG {
+	fill: #d33dd3;
+	fill-opacity: 0.25;
+}
+</style>
+<body>
+  <div id="viz"></div>
+<script>
+var svg = d3.select("#viz")                             // grabs the
+ with the id 'visualization'
+    .append("svg")                                      // Adds a SVG element to the end of it
+    .attr("width", width + margin.left + margin.right)  // With our pre-calcd dimensions
+    .attr("height", height + margin.top + margin.bottom)
+      .append('g')                                      // Before adding a group and moving it
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    svg.append('rect')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr("width", width/2)
+    .attr("height", height/2)
+    .style('fill', 'none');
+</script>
+
+</body>
+</html>

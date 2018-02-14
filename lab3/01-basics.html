@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<title>Workshop - Basics</title>
+
+	<!-- CSS, cascading style sheets set styles.
+		We're grabbing Bootstrap, a CSS library that will make formatring easier.
+	 	We also make calls to Google to use one of their fonts; Raleway -->
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Raleway:400,500,900" rel="stylesheet">
+
+	<!-- JS libraries, these will make all of the web mapping magic come true.
+			Bootstrap and jQuery are the basics, and they'll be used for the HTML -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<!-- D3.js, responsible for the graphics-->
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+
+	<!-- ColorBrewer, provides perceptually balanced colorschemes for us -->
+	<script src="https://d3js.org/colorbrewer.v1.min.js"></script>
+
+	<!-- TopoJson, a file format and will make mapping much easier for D3.js -->
+	<script src="https://d3js.org/topojson.v2.min.js"></script>
+
+	<!-- D3 Legend, for adding legends -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.21.0/d3-legend.min.js"></script>
+
+	<!-- SimpleStatistics.js, adds many stats functions. But we want Jenks natural breaks -->
+	<script src="https://unpkg.com/simple-statistics@2.3.0/dist/simple-statistics.min.js"></script>
+
+	<!-- annotations -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/1.14.0/d3-annotation.min.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/1.14.0/d3-annotation.min.js"></script>
+
+	<!-- Our Custom Styling -->
+	<link href="src/css/style.css" rel="stylesheet">
+	<style>
+
+		.outlineSVG {
+			fill: ddd;
+			fill-opacity: 0.5;
+			stroke: #000;
+			stroke-width: 1px;
+		}
+		#fillSVG {
+			fill: #d33dd3;
+			fill-opacity: 0.25;
+		}
+	</style>
+</head>
+
+<body>
+<!-- container -->
+<div class="container">
+  <br>
+	<div class="row">
+
+		<div class="panel panel-default">
+          <div class="panel-heading">
+          	<h1>Workshop <strong>Basics</strong></h1>
+          </div>
+
+          <div class="panel-body">
+						<div class="row">
+
+							<div class="col-xs-12">
+								<h3>Introduction</h3>
+								<strong>What is D3.js?</strong><blockquote>... D3 helps you bring data to life using SVG, Canvas and HTML. D3 combines powerful visualization and interaction techniques with a data-driven approach to DOM manipulation, giving you the full capabilities of modern browsers and the freedom to design the right visual interface for your data.</blockquote>
+								<p><strong>D3.js</strong> is a JavaScript visualization library for the web. D3.js is extremely flexible, at the cost of having to 'assemble-it-yourself'. This page will touch on the basics needed to create a map.</p>
+							</div>
+
+							<div class="col-xs-12">
+								<h3>SVG, what is it?</h3>
+								<ul>
+								  <li>SVG stands for Scalable Vector Graphics</li>
+								  <li>SVG is used to define vector-based graphics for the Web</li>
+								  <li>SVG defines the graphics in XML format</li>
+								  <li>SVG graphics do NOT lose any quality if they are zoomed or resized</li>
+								  <li>Every element and every attribute in SVG files can be animated</li>
+								</ul>
+							</div>
+
+							<div class="col-xs-12">
+								<h3>Selection</h3>
+								<p><strong>D3</strong> allows us to select elements from the DOM based on CSS selectors, for instance by ID, class attribute or tag name. The result of a select operation is an array of selected elements, the selection. Using select(), we select a single element from the DOM:</p>
+								<code>
+//select the element with ID 'example'
+d3.select('#example');
+								</code>
+								<p><strong>D3</strong> allows us to select elements from the DOM based on CSS selectors, for instance by ID, class attribute or tag name. The result of a select operation is an array of selected elements, the selection. Using select(), we select a single element from the DOM:</p>
+								<code>
+//select all elements with class 'example'
+d3.selectAll('.example');
+								</code>
+								<div id=''></div>
+							</div>
+
+							<div class="col-xs-12">
+								<h3>Adding Elements</h3>
+								<code>
+// The margin gives us a boundary around the figure. This is useful when
+// you have an axis with ticks needed to give information about the data
+var margin = {top: 15, right: 15, bottom: 15, left: 15};
+
+// We set the width/height with respect to the margins.
+// This allows all of our marking to be corretly placed, we'll correct for this
+var width = 960 - margin.left - margin.right;
+var height = 600 - margin.top - margin.bottom;
+
+// Our SVG element.
+var svg = d3.select("#viz")                             // grabs the <div> with the id 'visualization'
+    .append("svg")                                      // Adds a SVG element to the end of it
+    .attr("width", width + margin.left + margin.right)  // With our pre-calcd dimensions
+    .attr("height", height + margin.top + margin.bottom)
+      .append('g')                                      // Before adding a group and moving it
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+								</code>
+								<div id='viz-add'></div>
+								<ul>
+									<li><a href="https://bl.ocks.org/mbostock/3019563">Margin Convention</a> by the D3.js author himself.</li>
+									<li><a href="http://www.d3noob.org/2012/12/setting-up-margins-and-graph-area.html">Dashing D3: Setting up margins and graph area.</a></li>
+								</ul>
+							</div>
+
+							<div class="col-xs-12">
+								<h3>Attributes, IDs, and Styles</h3>
+								<p>Class' are an HTML attribute that allow many objects to share similar properties. You can set CSS rules and assign classes to d3.js elements.</p>
+								<code>
+/* style.css */
+.outlineSVG {
+	fill: ddd;
+	fill-opacity: 0.5;
+	stroke: #000;
+	stroke-width: 1px;
+}
+#fillSVG {
+	fill: #d33dd3;
+	fill-opacity: 0.25;
+}
+								</code>
+								<p>Then, when we assign class and ID to rectangles, they will reflect those properties!</p>
+								<code>
+// Classes
+// Classes allow many objects to share similar properties.
+// It also allows selecting a 'group'
+svg.append('rect')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr("width", width/2)
+    .attr("height", height/2)
+    .style('fill', 'none');
+svg.append('rect')
+    .attr('class', 'outlineSVG')                        // ADD a class
+    .attr('x', width/2)
+    .attr('y', 0)
+    .attr("width", width/2)
+    .attr("height", height/2);
+svg.append('rect')
+    .attr('class', 'outlineSVG')                        // ADD a class
+    .attr('x', 0)
+    .attr('y', height/2)
+    .attr("width", width/2)
+    .attr("height", height/2);
+
+// ID
+// ID's allow selection of a single element, useful for when we want specific elements
+svg.append('rect')
+    .attr('class', 'outlineSVG')
+    .attr('id', 'fillSVG')                              // ADD an unique ID
+    .attr('x', width/2)
+    .attr('y', height/2)
+    .attr("width", width/2)
+    .attr("height", height/2);
+								</code>
+								<div id='viz-attr'></div>
+							</div>
+
+
+
+		        </div>
+					</div>
+
+		</div> <!-- end panel -->
+	</div> <!-- end row -->
+</div> <!-- end container -->
+</body>
+
+<script src="src/js/01-basics.js"></script>
+</html>

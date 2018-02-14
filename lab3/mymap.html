@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <style>
+    body { margin:0;position:fixed;top:0;right:0;bottom:0;left:0; }
+	path.state {
+		stroke: #333;
+		fill: none;
+	}
+	.tweet {
+		fill-opacity: 0.1;
+		fill: steelblue;
+		stroke: none;
+	}
+  </style>
+</head>
+
+<body>
+  <script>
+    var width = 960;
+	var height = 500;
+	
+	var svg = d3.select('body').append('svg')
+		.attr('width', width)
+		.attr('height', height);
+	
+	var f = 'data/us-states.json';
+	d3.json(f, function(data) {
+		//console.log(data);
+		
+		var geo_projection = d3.geoAlbers();
+		var geo_path = d3.geoPath()
+			.pointRadius(2)
+			.projection(geo_projection);
+		
+		
+
+		// GeoJSON stores it's objects within a 'features' category
+		var states = data.features;
+			
+		svg.selectAll('.state')
+			.data(states)
+			.enter().append('path')
+			.attr('class', 'state')
+			.attr('d', geo_path);
+	
+	
+		// Tweets
+		var tweet_f = 'data/tweets_Nov9_2am_3am_EST.csv';
+		d3.csv(tweet_f, function(tweets) {
+		
+			/*tweets.forEach(function(d) {
+				d.favouritesCount = +d.favouritesCount;
+				d.latitude = +d.latitude;
+				d.longitude = +d.longitude;			
+				
+				return d;
+			});*/
+			//console.log(tweets[0]);
+		  tweets.forEach(function(d) {
+			d.latitude = +d.latitude;
+			d.longitude = +d.longitude;
+			var point = geo_projection([d.longitude, d.latitude]);
+			d.x = point[0];
+			d.y = point[1];
+			d.followersCount = +d.followersCount;
+
+			return d;
+		  });
+			
+			
+			var filtered = tweets.filter(function(d) {
+				return (d.favouritesCount > 0) 
+					&& (typeof d.latitude != 'undefined');
+					
+			});
+			filtered.forEach(function(d) { 
+				var point = geo_projection([d.longitude, d.latitude]);
+				d.x = point[0];
+				d.y = point[1];
+				return d;
+			});
+			
+			
+			console.log(filtered[0]);
+			
+			var radius = d3.scaleQuantile()
+				.domain(filtered.map(function(d) { return d.favouritesCount; }))
+				.range([0, 1, 2, 5, 10]);
+				
+			
+
+			svg.selectAll('.tweet')
+				.data(filtered)
+				  .enter().append('circle')
+				.attr('class', 'tweet')
+				.attr('id', function(d) { return 'tweetID-' + d.tweetID; })
+				.attr('cx', function(d) { return d.x; })
+				.attr('cy', function(d) { return d.y; })
+				.attr('r', function(d) { return radius(d.favouritesCount); })
+				.on('mouseover', function(d) {
+					var selector = '#tweetID-' + d.tweetID;
+					d3.select(selector)
+						.transition(100)
+						.style('stroke', '#fff');
+					console.log(d);
+				})
+				.append('title').text(function(d) { return d.message; });
+				
+	
+		});
+	
+	
+	});	
+	
+		
+	
+
+  </script>
+</body>

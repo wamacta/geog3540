@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<title>Workshop - Mapping</title>
+
+	<!-- CSS, cascading style sheets set styles.
+		We're grabbing Bootstrap, a CSS library that will make formatring easier.
+	 	We also make calls to Google to use one of their fonts; Raleway -->
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Raleway:400,500,900" rel="stylesheet">
+
+	<!-- JS libraries, these will make all of the web mapping magic come true.
+			Bootstrap and jQuery are the basics, and they'll be used for the HTML -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<!-- D3.js, responsible for the graphics-->
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+
+	<!-- ColorBrewer, provides perceptually balanced colorschemes for us -->
+	<script src="https://d3js.org/colorbrewer.v1.min.js"></script>
+
+	<!-- TopoJson, a file format and will make mapping much easier for D3.js -->
+	<script src="https://d3js.org/topojson.v2.min.js"></script>
+
+	<!-- D3 Legend, for adding legends -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.21.0/d3-legend.min.js"></script>
+
+	<!-- SimpleStatistics.js, adds many stats functions. But we want Jenks natural breaks -->
+	<script src="https://unpkg.com/simple-statistics@2.3.0/dist/simple-statistics.min.js"></script>
+
+	<!-- annotations -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/1.14.0/d3-annotation.min.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/1.14.0/d3-annotation.min.js"></script>
+
+	<!-- Our Custom Styling -->
+	<link href="src/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+<!-- container -->
+<div class="container">
+  <br>
+	<div class="row">
+
+		<div class="panel panel-default">
+          <div class="panel-heading">
+          	<h1>Workshop <strong>Mapping</strong></h1>
+          </div>
+
+          <div class="panel-body">
+						<div class="row">
+
+							<div class="col-xs-12" id='width-setter'>
+								<h3>Introduction</h3>
+							</div>
+
+							<div class="col-xs-12">
+								<h3>Data</h3>
+								<p><strong>One of the biggest</strong> pain points with D3.js is actually loading in your data! It can be extremely frustrating to fight with your computer to even start working. Luckily D3.js as several API calls for common data types including .csv, .txt, and .json. Mapping adds another level of complexity to the data, as we have to deal with projections to correctly display the underlying data. Usually this would entail a .shp (and associated) files to store geographic information. Instead we will use GeoJSON and it's svelte younger brother, TopoJSON.<p>
+							</div>
+
+							<div class="col-xs-12">
+								<h3>GeoJSON</h3>
+								<p><strong>GeoJSON</strong> is a file format to represent simple geographic features via JavaScript Object Notation. The features are one of four types; points, lines, polygons, and non-spatial attributes. This makes GeoJSON extremely flexible! Unfortunately, the file format encodes the spatial attributes for each object in the file. If there's any lines that overlap, for instance countries sharing borders, the information is doubly encoded.</p>
+								<p>Here's how we read in a GeoJSON file:</p>
+								<code>
+d3.json('path/to/file.json', function(data) {
+	// GeoJSON stores it's objects within a 'features' category
+	var features = data.features;
+
+	// ... mapping code below
+});
+								</code>
+								<div id='geojsonRead'></div>
+							</div>
+
+							<div class="col-xs-12">
+								<h3>TopoJSON</h3>
+								<p><strong>TopoJSON</strong> is an extension built on top of GeoJSON. It solves the encoding problem by storing all of the geometry and pointing the file objects only to it's subset of features. This makes the files easier to move around the web, but adds one more step for us to be able to convert to a format that we can use.</p>
+								<p>Here's how we read in a TopoJSON file:</p>
+								<code>
+d3.json('path/to/file.json', function(data) {
+
+	// Use the topojson.js library to extract the features
+	// Note that gson value below is equivalent to the 'data' variable
+	// we read in the prior code snippet.
+	var gjson = topojson.feature(data, data.objects.countries);
+
+	// Our extra step is done, we can proceed as normal
+	var features = gjson.features;
+
+	// ... mapping code below
+});
+								</code>
+								<div id='geojsonRead'></div>
+							</div>
+
+							<div class="col-xs-12">
+								<h3>Projections</h3>
+								<p></p>
+								<p>How to set projections.</p>
+								<code>
+// D3.js includes common geographic projections in their API
+// Usually you can speed up the process and use an existing function
+var projection_albers = d3.geoAlbersUsa();
+var projection_mercator = d3.geoMercator();
+
+// Custom projections
+// you can either specify your projection before reading it in
+var projection_specify = d3.geoTransverseMercator()
+		.rotate([x, y])
+		.precision(x)
+		.translate()
+		.scale(x);
+
+// Or set the projection after reading in the data
+d3.json('data/' + states_f, function(err, data) {
+
+	// Note we're fitting the projection to our specifiec width/height!
+	var projection_fit = d3.geoAlbers().fitSize([width, height], data);
+
+	// ... mapping code below
+});
+								</code>
+							</div>
+
+							<div class="col-xs-12">
+								<h3>Paths</h3>
+								<p><strong>Ultimately</strong> we will need to display the information! Most of the overhead of setting dimensions, adding svg's, and setting scales is done. D3 uses a function <q>d3.geoPath()</q> to draw geographic lines. This differs from a regular SVG line in that uses a geographic projection to scale latitude and longitude to X, Y coordinates.</p>
+								<code>
+var margin = {top: 10, right: 10, bottom: 10, left: 10},
+    width = 480 - margin.left - margin.right,
+    height = 250 - margin.top - margin.bottom;
+
+var svg = d3.select('#pathExample').append('svg')
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom)
+  .append('g')
+    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+d3.json('data/us-states.json', function(err, data) {
+  if (err) throw err;
+	// Set geographic variables
+  var geo_projection = d3.geoAlbersUsa().fitSize([width, height], data);
+  var geo_path = d3.geoPath().pointRadius(2).projection(geo_projection);
+
+	// GeoJSON stores it's objects within a 'features' category
+  var counties = data.features;
+
+	/* D3-SELECTION
+	svg_temp: Using our svg, create empty selections for each county
+	.data(): Use the GeoJSON features list
+	.enter().append('path'): // Add a 'path' element
+	.attr('class'): Add the class, fufilling the selection
+	.attr('d'): Generate a path using each feature's geometry */
+
+	svg_temp.selectAll('.county')
+		.data(counties)
+		.enter().append('path')
+		.attr('class', 'county')
+		.attr('d', geo_path);
+
+	});
+								</code>
+								<div class="col-xs-6" id='pathExample'></div>
+								<div class="col-xs-6" id='pathExample2'></div>
+							</div>
+
+		        </div>
+					</div>
+
+		</div> <!-- end panel -->
+	</div> <!-- end row -->
+</div> <!-- end container -->
+
+</body>
+<script src="src/js/02-mapping.js" type="text/javascript"></script>
+</html>
