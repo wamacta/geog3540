@@ -12,9 +12,40 @@
 	stroke-width: 1px;
 }
 #fillSVG {
-	fill: #d33dd3;
+	fill: #black;
 	fill-opacity: 0.25;
 }
+// Classes
+// Classes allow many objects to share similar properties.
+// It also allows selecting a 'group'
+svg.append('rect')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr("width", width/2)
+    .attr("height", height/2)
+    .style('fill', 'none');
+svg.append('rect')
+    .attr('class', 'outlineSVG')                        // ADD a class
+    .attr('x', width/2)
+    .attr('y', 0)
+    .attr("width", width/2)
+    .attr("height", height/2);
+svg.append('rect')
+    .attr('class', 'outlineSVG')                        // ADD a class
+    .attr('x', 0)
+    .attr('y', height/2)
+    .attr("width", width/2)
+    .attr("height", height/2);
+
+// ID
+// ID's allow selection of a single element, useful for when we want specific elements
+svg.append('rect')
+    .attr('class', 'outlineSVG')
+    .attr('id', 'fillSVG')                              // ADD an unique ID
+    .attr('x', width/2)
+    .attr('y', height/2)
+    .attr("width", width/2)
+    .attr("height", height/2);
 </style>
 <body>
   <div id="viz"></div>
