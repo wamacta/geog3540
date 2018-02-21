@@ -37,41 +37,43 @@ var svg = d3.select("#viz")                             // grabs the with the id
       .append('g')                                      // Before adding a group and moving it
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    svg.append('rect')
+    .attr('id', 'myrectangle')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr("width", width/2)
+    .attr("height", height/2)
+    .style('fill', 'purple');
 
-    d3.json('data/us-states.json', function(data) {
-    	// GeoJSON stores it's objects within a 'features' category
-    	var features = data.features;
-      features.forEach(function(element) {
-      console.log(element.properties["name"]);
-    });
-    	// ... mapping code below
-      d3.json('data/us-states.json', function(err, data) {
-  if (err) throw err;
-	// Set geographic variables
-  var geo_projection = d3.geoAlbersUsa().fitSize([width, height], data);
-  var geo_path = d3.geoPath().pointRadius(2).projection(geo_projection);
+    svg.append('rect')
+    .attr('id', 'myrectangle')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr("width", width/2)
+    .attr("height", height/2)
+    .style('fill', 'black');
 
-	// GeoJSON stores it's objects within a 'features' category
-  var counties = data.features;
+    svg.append('rect')
+    .attr('id', 'myrectangle')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr("width", width/2)
+    .attr("height", height/2)
+    .style('fill', 'grey');
 
-	/* D3-SELECTION
-	svg_temp: Using our svg, create empty selections for each county
-	.data(): Use the GeoJSON features list
-	.enter().append('path'): // Add a 'path' element
-	.attr('class'): Add the class, fufilling the selection
-	.attr('d'): Generate a path using each feature's geometry */
+    svg.append('rect')
+    .attr('id', 'myrectangle')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr("width", width/2)
+    .attr("height", height/2)
+    .style('fill', 'blue');
 
-	svg.selectAll('.county')
-		.data(counties)
-		.enter().append('path')
-		.attr('class', 'county')
-		.attr('d', geo_path);
-
-	});
-    });
-    // Note we're fitting the projection to our specifiec width/height!
-    	var projection_fit = d3.geoAlbers().fitSize([width, height], data);
-
+svg.append('circle')
+      .attr("cx", 30)
+      .attr("cy", 30)
+      .attr("r", 20)
+      
 </script>
 
 </body>
