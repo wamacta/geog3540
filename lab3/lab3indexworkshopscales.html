@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<!--You need to put everything inside of an html tag!-->
+<!--This is a comment! It doesn't do anything except helping you take notes for describing the code-->
+<head>
+  <script src="https://d3js.org/d3.v4.js"></script>
+<style>
+.outlineSVG {
+	fill: ddd;
+	fill-opacity: 0.5;
+	stroke: #000;
+	stroke-width: 1px;
+}
+#fillSVG {
+	fill: #myrectangle;
+	fill-opacity: 0.25;
+}
+</style>
+</head>
+
+
+
+<body>
+  <div id="viz"></div>
+<script>
+
+
+d3.tsv('data/' + scale_f, function(data) {
+  // look at the data
+  //console.log(data);
+
+  // Convert the attributes to nums
+  data.forEach(function(d) {
+    d.close = +d.close;
+    d.date = parse_time(d.date);
+    return d;
+  });
+
+  // Use D3's scales
+	// Numeric
+	var scl_linear = d3.scaleLinear().range([0, 200]);
+  scl_linear.domain( // Linear only needs the min/max
+    [d3.min(data, function(d) { return d.close; }),
+    d3.max(data, function(d) { return d.close; })]
+  );
+  // Time
+  var scl_time = d3.scaleTime().range([0, 200]);
+  scl_time.domain(  // Same with time
+    [d3.min(data, function(d) { return d.date; }),
+    d3.max(data, function(d) { return d.date; })]
+  );
+});
+
+// The margin gives us a boundary around the figure. This is useful when
+// you have an axis with ticks needed to give information about the data
+var margin = {top: 15, right: 15, bottom: 15, left: 15};
+console.log(margin)
+// We set the width/height with respect to the margins.
+// This allows all of our marking to be corretly placed, we'll correct for this
+var width = 960 - margin.left - margin.right;
+var height = 600 - margin.top - margin.bottom;
+
+var svg = d3.select("#viz")                             // grabs the with the id 'visualization'
+    .append("svg")                                      // Adds a SVG element to the end of it
+    .attr("width", width + margin.left + margin.right)  // With our pre-calcd dimensions
+    .attr("height", height + margin.top + margin.bottom)
+      .append('g')                                      // Before adding a group and moving it
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    svg.append('rect')
+    .attr('id', 'myrectangle')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr("width", width/2)
+    .attr("height", height/2)
+    .style('fill', 'purple');
+
+    svg.append('rect')
+    .attr('id', 'myrectangle')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr("width", width/2)
+    .attr("height", height/2)
+    .style('fill', 'black');
+
+    svg.append('rect')
+    .attr('id', 'myrectangle')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr("width", width/2)
+    .attr("height", height/2)
+    .style('fill', 'grey');
+
+    svg.append('rect')
+    .attr('id', 'myrectangle')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr("width", width/2)
+    .attr("height", height/2)
+    .style('fill', 'blue');
+
+svg.append('circle')
+      .attr("cx", 30)
+      .attr("cy", 30)
+      .attr("r", 20)
+
+</script>
+
+</body>
+</html>
