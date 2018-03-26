@@ -42,8 +42,8 @@
 
 <script type="text/javascript">
 
-var attributeName = "SmokersPct";
-var attributeAlias = "Percentage of Smokers";
+var attributeName = "ASIAN";
+var attributeAlias = "Percent Asian";
 
 var southWest = L.latLng(25, -125), northEast = L.latLng(49, -69), bounds = L.latLngBounds(southWest, northEast);
 
@@ -77,7 +77,7 @@ var margin = {
 }, width = 920 - margin.left - margin.right, height = 230 - margin.top - margin.bottom;
 
 //read the shapes
-d3.json("data/iowacountiesall.json", function(geoShape) {
+d3.json("data/map.json", function(geoShape) {
 
   var myarr = [];
 	geoShape.features.forEach(function (d) {
